@@ -4,11 +4,11 @@ import { describe, expect, it } from 'vitest'
 import { App } from './App.tsx'
 
 describe('App', () => {
-  it('renders the initial laboratory page', async () => {
+  it('redirige al login sin sesión', async () => {
     render(<App />)
 
     expect(
-      await screen.findByRole('heading', { name: /autenticación lab/i }),
+      await screen.findByRole('heading', { name: /bienvenido al laboratorio/i }),
     ).toBeInTheDocument()
   })
 })

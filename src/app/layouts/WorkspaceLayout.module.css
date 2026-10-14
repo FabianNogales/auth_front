@@ -1,0 +1,285 @@
+.workspace {
+  min-height: 100svh;
+  display: grid;
+  grid-template-columns: 16rem 1fr;
+  background: #f6f8fc;
+}
+
+.sidebar {
+  background: #ffffff;
+  border-right: 1px solid #e8edf5;
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0 0.5rem;
+}
+
+.logo {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.75rem;
+  background: #2563eb;
+  color: #ffffff;
+  position: relative;
+  flex: none;
+}
+
+.logo svg {
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.brand strong {
+  display: block;
+  color: #16283f;
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.brand span {
+  display: block;
+  color: #8a94a6;
+  font-size: 0.75rem;
+}
+
+.navSection {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.navTitle {
+  margin: 0 0 0.5rem 0.75rem;
+  color: #9aa5b8;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.6rem;
+  color: #3d4a5c;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.navLink:hover {
+  background: #f2f6ff;
+}
+
+.navLinkActive {
+  background: #eaf1ff;
+  color: #2563eb;
+}
+
+.navIcon {
+  display: inline-flex;
+  flex: none;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.topbar {
+  background: #ffffff;
+  border-bottom: 1px solid #e8edf5;
+  padding: 0.9rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.topLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.menuButton {
+  display: none;
+  background: none;
+  border: 1px solid #e8edf5;
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.55rem;
+  cursor: pointer;
+  color: #3d4a5c;
+}
+
+.breadcrumb {
+  margin: 0;
+  color: #8a94a6;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.breadcrumb strong {
+  color: #3d4a5c;
+  font-weight: 700;
+}
+
+.topRight {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.env {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #3d4a5c;
+  font-size: 0.85rem;
+  border-right: 1px solid #e8edf5;
+  padding-right: 1rem;
+  white-space: nowrap;
+}
+
+.envDot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: #10b981;
+  flex: none;
+}
+
+.userChip {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 0;
+}
+
+.avatar {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 9999px;
+  background: #ede9fe;
+  color: #6d28d9;
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 800;
+  line-height: 2.25rem;
+  text-align: center;
+  flex: none;
+}
+
+.userChip strong {
+  display: block;
+  color: #16283f;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.userChip span {
+  display: block;
+  color: #8a94a6;
+  font-size: 0.75rem;
+}
+
+.logoutButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: 1px solid #e8edf5;
+  border-radius: 0.6rem;
+  padding: 0.5rem 0.75rem;
+  color: #3d4a5c;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.logoutButton:hover {
+  background: #fef2f2;
+  border-color: #fecaca;
+  color: #b91c1c;
+}
+
+.content {
+  padding: 2rem;
+  width: 100%;
+  max-width: 72rem;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.scrim {
+  display: none;
+}
+
+@media (max-width: 48rem) {
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: min(80vw, 18rem);
+    z-index: 40;
+    transform: translateX(-105%);
+    transition: transform 0.2s ease;
+    box-shadow: none;
+  }
+
+  .sidebarOpen {
+    transform: translateX(0);
+    box-shadow: 0 0 2rem rgb(22 40 63 / 0.2);
+  }
+
+  .scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    background: rgb(22 40 63 / 0.45);
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .menuButton {
+    display: inline-flex;
+  }
+
+  .env {
+    display: none;
+  }
+
+  .userChip span {
+    display: none;
+  }
+
+  .logoutButton span {
+    display: none;
+  }
+
+  .content {
+    padding: 1.25rem 1rem;
+  }
+
+  .topbar {
+    padding: 0.75rem 1rem;
+  }
+}

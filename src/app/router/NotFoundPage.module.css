@@ -1,0 +1,38 @@
+.page {
+  min-height: 60vh;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+.card h1 {
+  margin: 0;
+  color: #16283f;
+  font-size: clamp(3rem, 8vw, 5rem);
+  font-weight: 800;
+}
+
+.card h2 {
+  margin: 0.5rem 0 0;
+  color: #16283f;
+  font-size: 1.25rem;
+}
+
+.card p {
+  margin: 0.5rem 0 1.5rem;
+  color: #8a94a6;
+}
+
+.card a {
+  display: inline-block;
+  background: #2563eb;
+  color: #ffffff;
+  font-weight: 700;
+  text-decoration: none;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1.5rem;
+}
+
+.card a:hover {
+  background: #1d4ed8;
+}
