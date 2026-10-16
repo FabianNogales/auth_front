@@ -18,12 +18,12 @@ export interface LabTab {
 export const LAB_TABS: LabTab[] = [
   { path: '/', label: 'Inicio', section: 'GENERAL', icon: 'home' },
   { path: '/perfil', label: 'Perfil', section: 'GENERAL', icon: 'user' },
-<<<<<<< Updated upstream
+
   { path: '/roles/crear', label: 'Crear rol', section: 'GENERAL', icon: 'shield' },
   { path: '/roles/permisos', label: 'Gestionar permisos', section: 'GENERAL', icon: 'shield' },
   { path: '/usuarios/roles', label: 'Asignar rol', section: 'GENERAL', icon: 'users' },
-=======
+
   { path: '/usuarios', label: 'Usuarios', section: 'GENERAL', icon: 'users' },
->>>>>>> Stashed changes
+
   { path: '/api-keys', label: 'API Keys', section: 'LABORATORIO', icon: 'shield' },
 ]

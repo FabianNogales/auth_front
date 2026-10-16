@@ -8,13 +8,13 @@ import { LabHomePage } from '../../features/experiments/pages/LabHomePage.tsx'
 import { ProfilePage } from '../../features/users/pages/ProfilePage.tsx'
 import { NotFoundPage } from './NotFoundPage.tsx'
 import { ApiKeysPage } from '../../features/authentication/pages/ApiKeysPage.tsx'
-<<<<<<< Updated upstream
+
 import { CreateRolePage } from '../../features/roles/pages/CreateRolePage.tsx'
 import { RolePermissionsPage } from '../../features/roles/pages/RolePermissionsPage.tsx'
 import { UserRolesPage } from '../../features/users/pages/UserRolesPage.tsx'
-=======
+
 import { UsersPage } from '../../features/users/pages/UsersPage';
->>>>>>> Stashed changes
+
 
 const router = createBrowserRouter([
   {
