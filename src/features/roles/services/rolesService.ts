@@ -4,11 +4,12 @@ import type { CreateRoleInput, RoleResponse } from '../types/role.ts'
 
 export const rolesService = {
   async getRoles(): Promise<RoleResponse[]> {
-    try {
-      return (await httpClient.get<RoleResponse[]>('/roles')).data
-    } catch (error) {
-      throw toApiError(error, 'No se pudieron cargar los roles.')
-    }
+    // MOCK TEMPORAL PARA PRUEBAS LOCALES (SCRUM-27)
+    return [
+      { id: '1', name: 'admin', description: 'Acceso total y administración del sistema', permissions: [] },
+      { id: '2', name: 'editor', description: 'Permisos para editar y modificar registros', permissions: [] },
+      { id: '3', name: 'viewer', description: 'Acceso exclusivo de solo lectura', permissions: [] }
+    ] as unknown as RoleResponse[]
   },
   async syncPermissions(name: string, permissions: string[]): Promise<void> {
     try {

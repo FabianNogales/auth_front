@@ -5,11 +5,12 @@ import type { UserWithRoles } from '../types/userRoles.ts'
 
 export const userRolesService = {
   async getUsers(): Promise<LabUser[]> {
-    try {
-      return (await httpClient.get<LabUser[]>('/users')).data
-    } catch (error) {
-      throw toApiError(error, 'No se pudieron cargar los usuarios.')
-    }
+    // MOCK TEMPORAL PARA PRUEBAS LOCALES (SCRUM-26)
+    return [
+      { id: '1', name: 'Administrador Lab', email: 'admin@lab.test', roles: ['admin'] },
+      { id: '2', name: 'Editor Contenido', email: 'editor@lab.test', roles: ['editor'] },
+      { id: '3', name: 'Usuario Lectura', email: 'viewer@lab.test', roles: ['viewer'] }
+    ] as unknown as LabUser[]
   },
   async getUser(id: string): Promise<UserWithRoles> {
     try {
