@@ -7,6 +7,7 @@ import { BasicLoginPage } from '../../features/authentication/pages/BasicLoginPa
 import { LabHomePage } from '../../features/experiments/pages/LabHomePage.tsx'
 import { ProfilePage } from '../../features/users/pages/ProfilePage.tsx'
 import { NotFoundPage } from './NotFoundPage.tsx'
+import { ApiKeysPage } from '../../features/authentication/pages/ApiKeysPage.tsx'
 
 const router = createBrowserRouter([
   {
@@ -21,6 +22,8 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [
+      { path: 'api-keys', element: <ApiKeysPage /> },
+      { path: 'usuarios/:userId/api-keys', element: <ApiKeysPage /> },
       {
         index: true,
         element: (

@@ -18,4 +18,5 @@ export interface LabTab {
 export const LAB_TABS: LabTab[] = [
   { path: '/', label: 'Inicio', section: 'GENERAL', icon: 'home' },
   { path: '/perfil', label: 'Perfil', section: 'GENERAL', icon: 'user' },
+  { path: '/api-keys', label: 'API Keys', section: 'LABORATORIO', icon: 'shield' },
 ]

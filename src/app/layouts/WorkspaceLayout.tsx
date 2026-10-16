@@ -56,8 +56,9 @@ export function WorkspaceLayout() {
   )
 
   const sections = ['GENERAL', 'LABORATORIO'] as const
+  const navigationPath = location.pathname.replace(/^\/usuarios\/[^/]+\/api-keys$/, '/api-keys')
   const current =
-    [...LAB_TABS].reverse().find((tab) => location.pathname === tab.path) ??
+    [...LAB_TABS].reverse().find((tab) => navigationPath === tab.path) ??
     LAB_TABS[0]
 
   return (
@@ -117,7 +118,7 @@ export function WorkspaceLayout() {
                   to={tab.path}
                   onClick={() => setMenuOpen(false)}
                   className={({ isActive }) =>
-                    isActive
+                    isActive || navigationPath === tab.path
                       ? `${styles.navLink} ${styles.navLinkActive}`
                       : styles.navLink
                   }
