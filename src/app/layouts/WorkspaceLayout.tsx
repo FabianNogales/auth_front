@@ -56,7 +56,10 @@ export function WorkspaceLayout() {
   )
 
   const sections = ['GENERAL', 'LABORATORIO'] as const
-  const navigationPath = location.pathname.replace(/^\/usuarios\/[^/]+\/api-keys$/, '/api-keys')
+  const navigationPath = location.pathname
+    .replace(/^\/usuarios\/[^/]+\/api-keys$/, '/api-keys')
+    .replace(/^\/roles\/[^/]+\/permisos$/, '/roles/permisos')
+    .replace(/^\/usuarios\/[^/]+\/roles$/, '/usuarios/roles')
   const current =
     [...LAB_TABS].reverse().find((tab) => navigationPath === tab.path) ??
     LAB_TABS[0]

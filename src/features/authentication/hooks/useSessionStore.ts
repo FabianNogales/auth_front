@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { queryClient } from '../../../app/providers/queryClient.ts'
 
 import type { AuthenticationMethod } from '../../../shared/types/authentication.ts'
 import type { LabUser } from '../types/auth.ts'
@@ -73,5 +74,8 @@ export const useSessionStore = create<SessionState>()((set) => ({
 
   setRoles: (roles) => set({ roles: [...roles] }),
 
-  logout: () => set({ ...initialSession }),
+  logout: () => {
+    set({ ...initialSession })
+    queryClient.clear()
+  },
 }))

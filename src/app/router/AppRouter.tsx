@@ -8,6 +8,9 @@ import { LabHomePage } from '../../features/experiments/pages/LabHomePage.tsx'
 import { ProfilePage } from '../../features/users/pages/ProfilePage.tsx'
 import { NotFoundPage } from './NotFoundPage.tsx'
 import { ApiKeysPage } from '../../features/authentication/pages/ApiKeysPage.tsx'
+import { CreateRolePage } from '../../features/roles/pages/CreateRolePage.tsx'
+import { RolePermissionsPage } from '../../features/roles/pages/RolePermissionsPage.tsx'
+import { UserRolesPage } from '../../features/users/pages/UserRolesPage.tsx'
 
 const router = createBrowserRouter([
   {
@@ -22,6 +25,11 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [
+      { path: 'roles/crear', element: <CreateRolePage /> },
+      { path: 'roles/permisos', element: <RolePermissionsPage /> },
+      { path: 'roles/:name/permisos', element: <RolePermissionsPage /> },
+      { path: 'usuarios/roles', element: <UserRolesPage /> },
+      { path: 'usuarios/:userId/roles', element: <UserRolesPage /> },
       { path: 'api-keys', element: <ApiKeysPage /> },
       { path: 'usuarios/:userId/api-keys', element: <ApiKeysPage /> },
       {
