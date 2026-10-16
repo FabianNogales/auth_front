@@ -60,4 +60,17 @@ export const apiKeyService = {
       throw toApiError(error, 'No se pudo revocar la API Key.')
     }
   },
+
+  async testProtected(apiKey: string): Promise<unknown> {
+    try {
+      const response = await httpClient.get('/auth/api-key/protected-resource', {
+        headers: {
+          'X-API-Key': apiKey.trim(),
+        },
+      })
+      return response.data
+    } catch (error) {
+      throw toApiError(error, 'No autenticado')
+    }
+  },
 }

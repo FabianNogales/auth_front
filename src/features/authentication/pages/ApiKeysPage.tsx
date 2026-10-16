@@ -7,6 +7,7 @@ import { IssueApiKeyForm } from '../components/IssueApiKeyForm.tsx'
 import { ApiKeySecret } from '../components/ApiKeySecret.tsx'
 import { ApiKeyTable } from '../components/ApiKeyTable.tsx'
 import styles from './ApiKeysPage.module.css'
+import { ApiKeyAuthTest } from '../components/ApiKeyAuthTest'
 
 export function ApiKeysPage() {
   const { userId: routeId } = useParams()
@@ -17,7 +18,7 @@ export function ApiKeysPage() {
     Number(routeId) > 0
       ? Number(routeId)
       : null
-  // Cambiar de usuario desmonta el componente y elimina el secreto anterior.
+
   return (
     <ApiKeysWorkspace
       key={routeId ?? 'none'}
@@ -41,6 +42,7 @@ function ApiKeysWorkspace({
   const forbidden =
     isApiError(keys.error) &&
     (keys.error.isForbidden || keys.error.isUnauthorized)
+
   return (
     <main className={styles.page}>
       <header>
@@ -48,6 +50,7 @@ function ApiKeysWorkspace({
         <h1>API Keys</h1>
         <p>Emite y revoca las claves de acceso de los usuarios.</p>
       </header>
+
       <section className={styles.panel}>
         <label htmlFor="key-user">Usuario</label>
         <select
@@ -87,6 +90,7 @@ function ApiKeysWorkspace({
           <p role="alert">Usuario no encontrado.</p>
         )}
       </section>
+
       {userId !== null && selected && (
         <>
           <section
@@ -112,6 +116,7 @@ function ApiKeysWorkspace({
               />
             )}
           </section>
+
           {keys.isSuccess && (
             <section className={styles.panel}>
               {secret !== null ? (
@@ -148,6 +153,10 @@ function ApiKeysWorkspace({
           )}
         </>
       )}
+
+      <section className={styles.panel}>
+        <ApiKeyAuthTest />
+      </section>
     </main>
   )
 }
