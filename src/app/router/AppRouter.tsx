@@ -8,6 +8,8 @@ import { LabHomePage } from '../../features/experiments/pages/LabHomePage.tsx'
 import { ProfilePage } from '../../features/users/pages/ProfilePage.tsx'
 import { NotFoundPage } from './NotFoundPage.tsx'
 import { ApiKeysPage } from '../../features/authentication/pages/ApiKeysPage.tsx'
+import { OAuthIssuePage } from '../../features/authentication/pages/OAuthIssuePage.tsx'
+import { OAuthRevokePage } from '../../features/authentication/pages/OAuthRevokePage.tsx'
 
 import { CreateRolePage } from '../../features/roles/pages/CreateRolePage.tsx'
 import { RolePermissionsPage } from '../../features/roles/pages/RolePermissionsPage.tsx'
@@ -35,6 +37,8 @@ const router = createBrowserRouter([
       { path: 'usuarios/roles', element: <UserRolesPage /> },
       { path: 'usuarios/:userId/roles', element: <UserRolesPage /> },
       { path: 'api-keys', element: <ApiKeysPage /> },
+      { path: 'oauth/emitir', element: <OAuthIssuePage /> },
+      { path: 'oauth/revocar', element: <OAuthRevokePage /> },
       { path: 'usuarios/:userId/api-keys', element: <ApiKeysPage /> },
       { path: 'usuarios', element: <UsersPage />, },
       {

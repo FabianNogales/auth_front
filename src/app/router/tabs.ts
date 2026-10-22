@@ -26,4 +26,6 @@ export const LAB_TABS: LabTab[] = [
   { path: '/usuarios', label: 'Usuarios', section: 'GENERAL', icon: 'users' },
 
   { path: '/api-keys', label: 'API Keys', section: 'LABORATORIO', icon: 'shield' },
+  { path: '/oauth/emitir', label: 'Emitir token OAuth', section: 'LABORATORIO', icon: 'shield' },
+  { path: '/oauth/revocar', label: 'Revocar token OAuth', section: 'LABORATORIO', icon: 'shield' },
 ]
