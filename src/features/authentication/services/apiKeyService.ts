@@ -61,9 +61,9 @@ export const apiKeyService = {
     }
   },
 
-  async testProtected(apiKey: string): Promise<unknown> {
+  async getProtectedResource<T>(path: string, apiKey: string): Promise<T> {
     try {
-      const response = await httpClient.get('/auth/api-key/protected-resource', {
+      const response = await httpClient.get<T>(path, {
         headers: {
           'X-API-Key': apiKey.trim(),
         },
@@ -72,5 +72,9 @@ export const apiKeyService = {
     } catch (error) {
       throw toApiError(error, 'No autenticado')
     }
+  },
+
+  async testProtected(apiKey: string): Promise<unknown> {
+    return apiKeyService.getProtectedResource('/auth/api-key/protected-resource', apiKey)
   },
 }
