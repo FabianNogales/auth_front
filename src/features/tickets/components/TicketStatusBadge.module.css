@@ -1,0 +1,6 @@
+.badge { display: inline-block; border-radius: 999px; padding: 2px 10px; font-size: 0.8rem; font-weight: 600; white-space: nowrap; }
+.OPEN { background: #e0ebff; color: #1e3a8a; }
+.IN_PROGRESS { background: #fff3cd; color: #7a5200; }
+.ESCALATED { background: #fde2e2; color: #9b1c1c; }
+.RESOLVED { background: #e3f6ec; color: #166534; }
+.CLOSED { background: #e5e7eb; color: #374151; }

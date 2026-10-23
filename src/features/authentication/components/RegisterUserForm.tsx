@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { userService } from '../services/userService';
 import type { RegisterUserInput } from '../services/userService';
 import { useSessionStore } from '../hooks/useSessionStore.ts';
+import { userRolesService } from '../../users/services/userRolesService';
 
 export const RegisterUserForm: React.FC = () => {
   const sessionRoles = useSessionStore((state) => state.roles);
@@ -97,7 +98,8 @@ export const RegisterUserForm: React.FC = () => {
 
     setIsSubmitting(true);
     try {
-      await userService.register(formData);
+      const created = await userService.register({ ...formData, role: 'VIEWER' });
+await userRolesService.assign(created.id, 'VIEWER');
       setSuccessMessage('Usuario registrado correctamente');
       setFormData({
         name: '',
@@ -250,16 +252,11 @@ export const RegisterUserForm: React.FC = () => {
       </div>
 
       <div className="mb-3">
-        <label>Rol inicial *</label>
-        <select
-          value={formData.role}
-          onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-          className="form-control"
-        >
-          <option value="VIEWER">VIEWER</option>
-          <option value="ADMIN">ADMIN</option>
-        </select>
-      </div>
+  <label>Rol inicial *</label>
+  <select value="VIEWER" disabled className="form-control">
+    <option value="VIEWER">VIEWER</option>
+  </select>
+</div>
 
       <button type="submit" disabled={isSubmitting} className="btn btn-primary">
         {isSubmitting ? 'Guardando...' : 'Guardar cambios'}

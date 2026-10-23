@@ -19,6 +19,9 @@ import { UserRolesPage } from '../../features/users/pages/UserRolesPage.tsx'
 
 import { UsersPage } from '../../features/users/pages/UsersPage';
 
+import { TicketsPage } from '../../features/tickets/pages/TicketsPage.tsx'
+import { CreateTicketPage } from '../../features/tickets/pages/CreateTicketPage.tsx'
+import { TicketDetailPage } from '../../features/tickets/pages/TicketDetailPage.tsx'
 
 const router = createBrowserRouter([
   {
@@ -33,6 +36,8 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [
+
+      
       { path: 'roles/crear', element: <CreateRolePage /> },
       { path: 'roles/permisos', element: <RolePermissionsPage /> },
       { path: 'roles/:name/permisos', element: <RolePermissionsPage /> },
@@ -45,6 +50,10 @@ const router = createBrowserRouter([
       { path: 'oauth/renovar', element: <OAuthRefreshPage /> },
       { path: 'usuarios/:userId/api-keys', element: <ApiKeysPage /> },
       { path: 'usuarios', element: <UsersPage />, },
+
+      { path: 'tickets', element: <TicketsPage /> },
+{ path: 'tickets/nuevo', element: <CreateTicketPage /> },
+{ path: 'tickets/:ticketId', element: <TicketDetailPage /> },
       {
         index: true,
         element: (

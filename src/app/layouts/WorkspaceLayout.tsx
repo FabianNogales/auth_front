@@ -60,6 +60,8 @@ export function WorkspaceLayout() {
     .replace(/^\/usuarios\/[^/]+\/api-keys$/, '/api-keys')
     .replace(/^\/roles\/[^/]+\/permisos$/, '/roles/permisos')
     .replace(/^\/usuarios\/[^/]+\/roles$/, '/usuarios/roles')
+
+    .replace(/^\/tickets\/\d+$/, '/tickets')
   const current =
     [...LAB_TABS].reverse().find((tab) => navigationPath === tab.path) ??
     LAB_TABS[0]
