@@ -22,7 +22,7 @@
 }
 .form { display: grid; gap: 18px; max-width: 580px; }
 .page label { display: block; font-weight: 600; margin-bottom: 8px; }
-.page input {
+.page input, .page select {
   width: 100%;
   box-sizing: border-box;
   min-height: 44px;
@@ -67,6 +67,7 @@
 }
 .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 18px; }
 .page .secondary { background: #e0e7f0; color: #172033; }
+.response { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 420px; overflow: auto; padding: 16px; background: #f6f8fc; border-radius: 8px; }
 @media (max-width: 640px) {
   .page { gap: 16px; }
   .panel, .secret { padding: 16px; }

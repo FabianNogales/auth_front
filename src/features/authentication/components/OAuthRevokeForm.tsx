@@ -6,6 +6,7 @@ import { isApiError } from '../../../shared/services/ApiError.ts'
 import { oauthRevokeSchema } from '../schemas/oauthSchema.ts'
 import { oauthFieldError, oauthService } from '../services/oauthService.ts'
 import styles from '../pages/OAuthPage.module.css'
+import { useSessionStore } from '../hooks/useSessionStore.ts'
 
 export function OAuthRevokeForm() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -18,6 +19,7 @@ export function OAuthRevokeForm() {
       setErrorMessage(null)
       try {
         const result = await oauthService.revokeToken(token)
+        if (useSessionStore.getState().oauthToken === token) useSessionStore.getState().clearOAuthTokens()
         reset()
         if (result === 'already_revoked') toast.info('El token ya estaba revocado')
         else toast.success('Token revocado correctamente')

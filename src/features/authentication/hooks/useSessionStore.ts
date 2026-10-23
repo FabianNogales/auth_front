@@ -3,6 +3,7 @@ import { queryClient } from '../../../app/providers/queryClient.ts'
 
 import type { AuthenticationMethod } from '../../../shared/types/authentication.ts'
 import type { LabUser } from '../types/auth.ts'
+import type { OAuthTokenPair } from '../types/oauth.ts'
 
 interface SessionState {
   mechanism: AuthenticationMethod | null
@@ -12,6 +13,7 @@ interface SessionState {
   apiKey: string | null
   jwtToken: string | null
   oauthToken: string | null
+  oauthRefreshToken: string | null
   user: LabUser | null
   /**
    * Roles del usuario para mostrar/ocultar tabs. Solo UI: la autorización
@@ -23,6 +25,8 @@ interface SessionState {
   setApiKey: (key: string) => void
   setJwtToken: (token: string) => void
   setOAuthToken: (token: string) => void
+  rememberOAuthPair: (pair: OAuthTokenPair) => void
+  clearOAuthTokens: () => void
   setRoles: (roles: string[]) => void
   logout: () => void
 }
@@ -34,6 +38,7 @@ const initialSession: {
   apiKey: string | null
   jwtToken: string | null
   oauthToken: string | null
+  oauthRefreshToken: string | null
   user: LabUser | null
   roles: string[]
 } = {
@@ -43,6 +48,7 @@ const initialSession: {
   apiKey: null,
   jwtToken: null,
   oauthToken: null,
+  oauthRefreshToken: null,
   user: null,
   roles: [],
 }
@@ -71,6 +77,10 @@ export const useSessionStore = create<SessionState>()((set) => ({
 
   setOAuthToken: (token) =>
     set((state) => ({ ...state, mechanism: 'OAUTH2', oauthToken: token })),
+
+  // Credenciales del experimento en memoria; no cambia la identidad que abrió el laboratorio.
+  rememberOAuthPair: (pair) => set({ oauthToken: pair.access_token, oauthRefreshToken: pair.refresh_token }),
+  clearOAuthTokens: () => set({ oauthToken: null, oauthRefreshToken: null }),
 
   setRoles: (roles) => set({ roles: [...roles] }),
 
