@@ -16,6 +16,10 @@ function TabIcon({ icon }: { icon: LabTab['icon'] }) {
       'M12 3l7 3v5c0 5-3.5 8-7 9-3.5-1-7-4-7-9V6l7-3zm-1.2 9.6l4-4 1.4 1.4-5.4 5.4-2.6-2.6 1.4-1.4 1.2 1.2z',
     flask:
       'M10 3h4v2h-1v5.2l4.5 8.1A1 1 0 0 1 16.6 20H7.4a1 1 0 0 1-.9-1.4L11 10.2V5h-1V3zm2 12.4L9.6 18h4.8L12 15.4z',
+    ticket:
+      'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8l-6-6zm0 2l5 5H6V4h12l5 5zm0 2l-5 5H6V4h12l5 5zm0 2l-5 5H6V4h12l5 5zm0 2l-5 5H6V4h8v2z',
+    chart:
+      'M3 3v18h18V3H3zm8 14H7v-6h2v6h4v-6h2v6h2v-6h2v6h2V5h2v14zm-8-6h2v4H9v-4zm4 0h2v4H9v-4zm4 0h2v4h-2v-4zm4 0h2v4h-2v-4z',
   }
 
   return (

@@ -1,0 +1,73 @@
+.page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: #ffffff;
+}
+
+.brand {
+  background: #eef4ff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3rem;
+}
+
+.brand h2 {
+  margin: 0;
+  color: #1e3a5f;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.15;
+  font-weight: 800;
+}
+
+.mechanisms {
+  margin: 2rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  gap: 0.75rem;
+  color: #5b8def;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.mechanisms li + li::before {
+  content: '/';
+  margin-right: 0.75rem;
+  color: #b9cdf3;
+}
+
+.panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+}
+
+.card {
+  width: min(100%, 24rem);
+}
+
+.card h1 {
+  margin: 0;
+  color: #16283f;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.subtitle {
+  margin: 0.5rem 0 0;
+  color: #8a94a6;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 48rem) {
+  .page {
+    grid-template-columns: 1fr;
+  }
+
+  .brand {
+    padding: 2rem 1.5rem;
+  }
+}

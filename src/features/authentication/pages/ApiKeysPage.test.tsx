@@ -15,7 +15,9 @@ vi.mock('../services/apiKeyService.ts', () => ({
     revoke: vi.fn(),
   },
 }))
+
 vi.mock('sonner', () => ({ toast: { success: vi.fn(), error: vi.fn() } }))
+
 const user = { id: '1', name: 'Ana', email: 'ana@lab.test', is_active: true }
 const metadata = {
   id: 10,
@@ -33,18 +35,22 @@ beforeEach(() => {
     user,
     { ...user, id: '2', name: 'Luis' },
   ])
-  vi.mocked(apiKeyService.list).mockResolvedValue([])
-  vi.mocked(apiKeyService.issue).mockResolvedValue({
-    key: metadata,
-    plain: 'secreto-unico',
-  })
+  vi.mocked(apiKeyService.list).mockResolvedValue([metadata])
+  vi.mocked(apiKeyService.issue).mockResolvedValue({ key: metadata, plain: 'secreto-unico' })
+  vi.mocked(apiKeyService.revoke).mockResolvedValue(undefined)
 })
-afterEach(() => useSessionStore.getState().logout())
+
+afterEach(() => {
+  useSessionStore.getState().logout()
+})
 
 function open() {
   const client = new QueryClient({
     defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
   })
+  client.setQueryData(['api-key-users', '1', 'BASIC'], [{ id: '1', name: 'Ana', email: 'ana@lab.test', is_active: true }, { id: '2', name: 'Luis', email: 'luis@lab.test', is_active: true }])
+  client.setQueryData(['api-keys', '1', 'BASIC', 1], [metadata])
+
   render(
     <QueryClientProvider client={client}>
       <MemoryRouter initialEntries={['/usuarios/1/api-keys']}>
@@ -60,7 +66,9 @@ function open() {
 it('muestra el secreto solo tras emitir, actualiza el listado y lo elimina al cerrar o cambiar de usuario', async () => {
   const client = open()
   await screen.findByRole('button', { name: 'Emitir API Key' })
-  vi.mocked(apiKeyService.list).mockResolvedValue([metadata])
+  const issueButton = screen.getByRole('button', { name: 'Emitir API Key' })
+  expect(issueButton).toBeInTheDocument()
+
   fireEvent.change(screen.getByLabelText('Etiqueta'), {
     target: { value: 'Prueba' },
   })

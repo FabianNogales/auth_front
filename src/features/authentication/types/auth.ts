@@ -17,3 +17,23 @@ export interface BasicLoginResponse {
   user: LabUser
   mechanism: AuthenticationMethod | string
 }
+
+/** Credenciales para login JWT (email + password). */
+export interface JwtCredentials {
+  email: string
+  password: string
+}
+
+/** Respuesta del login JWT. */
+export interface JwtLoginResponse {
+  user: LabUser
+  mechanism: AuthenticationMethod | string
+  token: string
+  expires_at: string
+}
+
+/** Respuesta del refresh JWT. */
+export interface JwtRefreshResponse {
+  token: string
+  expires_at: string
+}

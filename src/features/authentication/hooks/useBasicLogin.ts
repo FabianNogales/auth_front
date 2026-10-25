@@ -1,36 +1,47 @@
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
-import { isApiError } from '../../../shared/services/ApiError.ts'
-import { userRolesService } from '../../users/services/userRolesService.ts'
 import { basicAuthService } from '../services/basicAuthService.ts'
-import type { BasicCredentials } from '../types/auth.ts'
 import { useSessionStore } from './useSessionStore.ts'
 
+/**
+ * Login Basic: verifica identidad, guarda sesión y avisa por toast.
+ * El backend responde 401 bare tanto para email inexistente como para
+ * password mala (indistinguible a propósito) → "Credenciales incorrectas".
+ */
 export function useBasicLogin() {
   const loginBasic = useSessionStore((state) => state.loginBasic)
-  const setRoles = useSessionStore((state) => state.setRoles)
 
   return useMutation({
-    mutationFn: (credentials: BasicCredentials) =>
+    mutationFn: (credentials: { email: string; password: string }) =>
       basicAuthService.login(credentials),
     onSuccess: async (response, credentials) => {
-      let roles: string[] = []
-      try {
-        const userWithRoles = await userRolesService.getUser(response.user.id)
-        roles = userWithRoles.roles.map((role) => role.name)
-      } catch {
-        toast.warning('Sesión iniciada, pero no se pudieron cargar tus roles.')
-      }
-
       loginBasic(credentials.email, credentials.password, response.user)
-      setRoles(roles)
       toast.success('Sesión iniciada', {
         description: `Bienvenido, ${response.user.name}.`,
       })
+
+      // Fetch roles after successful login
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/users/me`, {
+          headers: { Authorization: `Basic ${btoa(`${credentials.email}:${credentials.password}`)}` }
+        })
+        if (res.ok) {
+          const data = await res.json()
+          if (data.roles) {
+            useSessionStore.getState().setRoles(data.roles.map((r: { name: string }) => r.name))
+          }
+        }
+      } catch {
+        // Silently fail, roles will be empty
+      }
     },
     onError: (error: unknown) => {
-      if (isApiError(error) && error.isUnauthorized) {
+      if (error instanceof Response && error.status === 401) {
+        toast.error('Credenciales incorrectas.')
+        return
+      }
+      if (error instanceof Error && error.name === 'ApiError' && 'isUnauthorized' in error && error.isUnauthorized) {
         toast.error('Credenciales incorrectas.')
         return
       }

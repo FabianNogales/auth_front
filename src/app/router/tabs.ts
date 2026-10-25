@@ -11,7 +11,7 @@ export interface LabTab {
   path: string
   label: string
   section: LabTabSection
-  icon: 'home' | 'user' | 'users' | 'shield' | 'flask'
+  icon: 'home' | 'user' | 'users' | 'shield' | 'flask' | 'ticket' | 'chart'
   roles?: string[]
 }
 
@@ -19,18 +19,19 @@ export const LAB_TABS: LabTab[] = [
   { path: '/', label: 'Inicio', section: 'GENERAL', icon: 'home' },
   { path: '/perfil', label: 'Perfil', section: 'GENERAL', icon: 'user' },
 
-  { path: '/roles/crear', label: 'Crear rol', section: 'GENERAL', icon: 'shield' },
-  { path: '/roles/permisos', label: 'Gestionar permisos', section: 'GENERAL', icon: 'shield' },
-  { path: '/usuarios/roles', label: 'Asignar rol', section: 'GENERAL', icon: 'users' },
+  { path: '/roles/crear', label: 'Crear rol', section: 'GENERAL', icon: 'shield', roles: ['ADMIN'] },
+  { path: '/roles/permisos', label: 'Gestionar permisos', section: 'GENERAL', icon: 'shield', roles: ['ADMIN'] },
+  { path: '/usuarios/roles', label: 'Asignar rol', section: 'GENERAL', icon: 'users', roles: ['ADMIN'] },
 
-  { path: '/usuarios', label: 'Usuarios', section: 'GENERAL', icon: 'users' },
+  { path: '/usuarios', label: 'Usuarios', section: 'GENERAL', icon: 'users', roles: ['ADMIN'] },
 
-  { path: '/tickets', label: 'Tickets', section: 'GENERAL', icon: 'shield' },
-{ path: '/tickets/nuevo', label: 'Crear ticket', section: 'GENERAL', icon: 'shield' },
+  { path: '/tickets', label: 'Tickets', section: 'GENERAL', icon: 'ticket', roles: ['VIEWER', 'EDITOR', 'ADMIN'] },
+  { path: '/tickets/nuevo', label: 'Crear ticket', section: 'GENERAL', icon: 'ticket', roles: ['VIEWER', 'EDITOR', 'ADMIN'] },
 
-  { path: '/api-keys', label: 'API Keys', section: 'LABORATORIO', icon: 'shield' },
-  { path: '/oauth/emitir', label: 'Emitir token OAuth', section: 'LABORATORIO', icon: 'shield' },
-  { path: '/oauth/solicitud', label: 'Solicitud OAuth', section: 'LABORATORIO', icon: 'flask' },
-  { path: '/oauth/renovar', label: 'Renovar token OAuth', section: 'LABORATORIO', icon: 'shield' },
-  { path: '/oauth/revocar', label: 'Revocar token OAuth', section: 'LABORATORIO', icon: 'shield' },
+  { path: '/api-keys', label: 'API Keys', section: 'LABORATORIO', icon: 'shield', roles: ['ADMIN'] },
+
+  { path: '/oauth/emitir', label: 'Emitir token OAuth', section: 'LABORATORIO', icon: 'shield', roles: ['ADMIN'] },
+  { path: '/oauth/solicitud', label: 'Solicitud OAuth', section: 'LABORATORIO', icon: 'flask', roles: ['ADMIN'] },
+  { path: '/oauth/renovar', label: 'Renovar token OAuth', section: 'LABORATORIO', icon: 'shield', roles: ['ADMIN'] },
+  { path: '/oauth/revocar', label: 'Revocar token OAuth', section: 'LABORATORIO', icon: 'shield', roles: ['ADMIN'] },
 ]

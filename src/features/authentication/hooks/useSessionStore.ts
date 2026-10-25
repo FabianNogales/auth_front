@@ -22,6 +22,7 @@ interface SessionState {
    */
   roles: string[]
   loginBasic: (email: string, password: string, user: LabUser) => void
+  loginJwt: (token: string, user: LabUser) => void
   setApiKey: (key: string) => void
   setJwtToken: (token: string) => void
   setOAuthToken: (token: string) => void
@@ -66,6 +67,14 @@ export const useSessionStore = create<SessionState>()((set) => ({
       mechanism: 'BASIC',
       basicEmail: email,
       basicPassword: password,
+      user,
+    }),
+
+  loginJwt: (token, user) =>
+    set({
+      ...initialSession,
+      mechanism: 'JWT',
+      jwtToken: token,
       user,
     }),
 

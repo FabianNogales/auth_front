@@ -4,6 +4,7 @@ import { ProtectedRoute } from '../../features/authentication/components/Protect
 import { RootLayout } from '../layouts/RootLayout.tsx'
 import { WorkspaceLayout } from '../layouts/WorkspaceLayout.tsx'
 import { BasicLoginPage } from '../../features/authentication/pages/BasicLoginPage.tsx'
+import { JwtLoginPage } from '../../features/authentication/pages/JwtLoginPage.tsx'
 import { LabHomePage } from '../../features/experiments/pages/LabHomePage.tsx'
 import { ProfilePage } from '../../features/users/pages/ProfilePage.tsx'
 import { NotFoundPage } from './NotFoundPage.tsx'
@@ -16,8 +17,7 @@ import { OAuthRefreshPage } from '../../features/authentication/pages/OAuthRefre
 import { CreateRolePage } from '../../features/roles/pages/CreateRolePage.tsx'
 import { RolePermissionsPage } from '../../features/roles/pages/RolePermissionsPage.tsx'
 import { UserRolesPage } from '../../features/users/pages/UserRolesPage.tsx'
-
-import { UsersPage } from '../../features/users/pages/UsersPage';
+import { UsersPage } from '../../features/users/pages/UsersPage'
 
 import { TicketsPage } from '../../features/tickets/pages/TicketsPage.tsx'
 import { CreateTicketPage } from '../../features/tickets/pages/CreateTicketPage.tsx'
@@ -29,6 +29,10 @@ const router = createBrowserRouter([
     element: <BasicLoginPage />,
   },
   {
+    path: '/login/jwt',
+    element: <JwtLoginPage />,
+  },
+  {
     path: '/',
     element: (
       <ProtectedRoute>
@@ -36,7 +40,6 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [
-
       
       { path: 'roles/crear', element: <CreateRolePage /> },
       { path: 'roles/permisos', element: <RolePermissionsPage /> },
@@ -52,8 +55,8 @@ const router = createBrowserRouter([
       { path: 'usuarios', element: <UsersPage />, },
 
       { path: 'tickets', element: <TicketsPage /> },
-{ path: 'tickets/nuevo', element: <CreateTicketPage /> },
-{ path: 'tickets/:ticketId', element: <TicketDetailPage /> },
+      { path: 'tickets/nuevo', element: <CreateTicketPage /> },
+      { path: 'tickets/:ticketId', element: <TicketDetailPage /> },
       {
         index: true,
         element: (
