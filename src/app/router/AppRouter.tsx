@@ -18,7 +18,7 @@ import { CreateRolePage } from "../../features/roles/pages/CreateRolePage.tsx";
 import { RolePermissionsPage } from "../../features/roles/pages/RolePermissionsPage.tsx";
 import { UserRolesPage } from "../../features/users/pages/UserRolesPage.tsx";
 import { UsersPage } from "../../features/users/pages/UsersPage";
-
+import { LoginHubPage } from "../../features/authentication/pages/LoginHubPage.tsx";
 import { TicketsPage } from "../../features/tickets/pages/TicketsPage.tsx";
 import { CreateTicketPage } from "../../features/tickets/pages/CreateTicketPage.tsx";
 import { TicketDetailPage } from "../../features/tickets/pages/TicketDetailPage.tsx";
@@ -26,6 +26,10 @@ import { TicketDetailPage } from "../../features/tickets/pages/TicketDetailPage.
 const router = createBrowserRouter([
   {
     path: "/login",
+    element: <LoginHubPage />,
+  },
+  {
+    path: "/login/basic",
     element: <BasicLoginPage />,
   },
   {

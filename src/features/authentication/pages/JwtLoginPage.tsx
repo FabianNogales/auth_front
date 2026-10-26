@@ -1,14 +1,14 @@
-import { useNavigate } from 'react-router'
+import { Link, useNavigate } from "react-router";
 
-import { JwtLoginForm } from '../components/JwtLoginForm.tsx'
-import styles from './JwtLoginPage.module.css'
+import { JwtLoginForm } from "../components/JwtLoginForm.tsx";
+import styles from "./JwtLoginPage.module.css";
 
 /**
  * Pantalla de inicio de sesión JWT: formulario de login con
  * correo+contraseña. Al ingresar, redirige a la pantalla principal del laboratorio.
  */
 export function JwtLoginPage() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
     <div className={styles.page}>
@@ -28,11 +28,14 @@ export function JwtLoginPage() {
 
       <section className={styles.panel} aria-label="Acceso">
         <div className={styles.card}>
+          <Link to="/login" className={styles.back}>
+            ← Volver a mecanismos
+          </Link>
           <h1>Bienvenido al laboratorio</h1>
           <p className={styles.subtitle}>Accede con tu cuenta JWT.</p>
-          <JwtLoginForm onSuccess={() => void navigate('/perfil')} />
+          <JwtLoginForm onSuccess={() => void navigate("/perfil")} />
         </div>
       </section>
     </div>
-  )
+  );
 }

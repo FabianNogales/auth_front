@@ -48,18 +48,39 @@ export function WorkspaceLayout() {
   const location = useLocation();
   const user = useSessionStore((state) => state.user);
   const mechanism = useSessionStore((state) => state.mechanism);
-  const sessionRoles = useSessionStore((state) => state.roles);
+  const sessionPermissions = useSessionStore((state) => state.permissions);
   const logout = useSessionStore((state) => state.logout);
   const jwtToken = useSessionStore((state) => state.jwtToken);
   const revokeJwt = useRevokeJwt();
   const [menuOpen, setMenuOpen] = useState(false);
+  const isAdmin = sessionPermissions.includes("ADMIN");
 
-  const visibleTabs = LAB_TABS.filter(
-    (tab) =>
-      tab.roles === undefined ||
-      tab.roles.length === 0 ||
-      tab.roles.some((role) => sessionRoles.includes(role)),
-  );
+  const visibleTabs = LAB_TABS.filter((tab) => {
+    // Filtro por mecanismo activo: se saltea si el usuario es ADMIN.
+    if (!isAdmin) {
+      if (
+        tab.mechanisms !== undefined &&
+        tab.mechanisms.length > 0 &&
+        (mechanism === null || !tab.mechanisms.includes(mechanism))
+      ) {
+        return false;
+      }
+    }
+
+    // Filtro por permisos: siempre se aplica (ADMIN puede ver pestañas
+    // que requieren READ/WRITE/DELETE solo si tiene esos permisos en /me).
+    if (
+      tab.permissions !== undefined &&
+      tab.permissions.length > 0 &&
+      !tab.permissions.some((permission) =>
+        sessionPermissions.includes(permission),
+      )
+    ) {
+      return false;
+    }
+
+    return true;
+  });
 
   const sections = ["GENERAL", "LABORATORIO"] as const;
   const navigationPath = location.pathname
@@ -155,6 +176,21 @@ export function WorkspaceLayout() {
             </nav>
           );
         })}
+        {sessionPermissions.length > 0 && (
+          <section
+            className={styles.permissions}
+            aria-label="Permisos del usuario"
+          >
+            <p className={styles.navTitle}>PERMISOS</p>
+            <ul className={styles.permissionList}>
+              {sessionPermissions.map((perm) => (
+                <li key={perm} className={styles.permissionBadge}>
+                  {perm}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
       </aside>
 
       <div className={styles.main}>

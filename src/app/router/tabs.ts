@@ -2,8 +2,14 @@
  * Registro central de tabs del workspace.
  *
  * Otros devs agregan páginas aquí: una entrada = un item del sidebar.
- * `roles` filtra por rol en UI (vacío = solo exige sesión). La autorización
- * real siempre la decide el backend por request.
+ * `permissions` filtra por permisos efectivos del usuario (vacío = solo exige
+ * sesión). `mechanisms` filtra por el mecanismo de autenticación activo
+ * (vacío = se muestra con cualquier mecanismo). La autorización real siempre
+ * la decide el backend por request.
+ *
+ * Modelo de permisos: `ADMIN`, `DELETE`, `READ`, `WRITE`. Los roles son
+ * dinámicos (el backend permite crear roles custom) así que el filtro se hace
+ * por permisos, no por nombre de rol.
  */
 export type LabTabSection = "GENERAL" | "LABORATORIO";
 
@@ -12,7 +18,9 @@ export interface LabTab {
   label: string;
   section: LabTabSection;
   icon: "home" | "user" | "users" | "shield" | "flask" | "ticket" | "chart";
-  roles?: string[];
+  permissions?: string[];
+  /** Si se define, el tab solo se muestra cuando el mecanismo activo coincide. */
+  mechanisms?: string[];
 }
 
 export const LAB_TABS: LabTab[] = [
@@ -24,29 +32,28 @@ export const LAB_TABS: LabTab[] = [
     label: "Crear rol",
     section: "GENERAL",
     icon: "shield",
-    roles: ["ADMIN"],
+    permissions: ["ADMIN"],
   },
   {
     path: "/roles/permisos",
     label: "Gestionar permisos",
     section: "GENERAL",
     icon: "shield",
-    roles: ["ADMIN"],
+    permissions: ["ADMIN"],
   },
   {
     path: "/usuarios/roles",
     label: "Asignar rol",
     section: "GENERAL",
     icon: "users",
-    roles: ["ADMIN"],
+    permissions: ["ADMIN"],
   },
-
   {
     path: "/usuarios",
     label: "Usuarios",
     section: "GENERAL",
     icon: "users",
-    roles: ["ADMIN"],
+    permissions: ["ADMIN"],
   },
 
   {
@@ -54,21 +61,22 @@ export const LAB_TABS: LabTab[] = [
     label: "Tickets",
     section: "GENERAL",
     icon: "ticket",
-    roles: ["VIEWER", "EDITOR", "ADMIN"],
+    permissions: ["READ"],
   },
   {
     path: "/tickets/nuevo",
     label: "Crear ticket",
     section: "GENERAL",
     icon: "ticket",
-    roles: ["VIEWER", "EDITOR", "ADMIN"],
+    permissions: ["WRITE"],
   },
+
   {
     path: "/api-keys",
     label: "API Keys",
     section: "LABORATORIO",
     icon: "shield",
-    roles: ["ADMIN"],
+    permissions: ["ADMIN"],
   },
 
   {
@@ -76,7 +84,7 @@ export const LAB_TABS: LabTab[] = [
     label: "Sesión JWT",
     section: "LABORATORIO",
     icon: "shield",
-    roles: ["VIEWER", "EDITOR", "ADMIN"],
+    mechanisms: ["JWT"],
   },
 
   {
@@ -84,35 +92,29 @@ export const LAB_TABS: LabTab[] = [
     label: "Emitir token OAuth",
     section: "LABORATORIO",
     icon: "shield",
-    roles: ["ADMIN"],
-  },
-
-  {
-    path: "/oauth/emitir",
-    label: "Emitir token OAuth",
-    section: "LABORATORIO",
-    icon: "shield",
-    roles: ["ADMIN"],
+    permissions: ["ADMIN"],
   },
   {
     path: "/oauth/solicitud",
     label: "Solicitud OAuth",
     section: "LABORATORIO",
     icon: "flask",
-    roles: ["ADMIN"],
+    permissions: ["ADMIN"],
   },
   {
     path: "/oauth/renovar",
     label: "Renovar token OAuth",
     section: "LABORATORIO",
     icon: "shield",
-    roles: ["ADMIN"],
+    permissions: ["ADMIN"],
+    mechanisms: ["OAUTH2"],
   },
   {
     path: "/oauth/revocar",
     label: "Revocar token OAuth",
     section: "LABORATORIO",
     icon: "shield",
-    roles: ["ADMIN"],
+    permissions: ["ADMIN"],
+    mechanisms: ["OAUTH2"],
   },
 ];

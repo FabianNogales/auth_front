@@ -33,7 +33,7 @@
 }
 
 .mechanisms li + li::before {
-  content: '/';
+  content: "/";
   margin-right: 0.75rem;
   color: #b9cdf3;
 }
@@ -70,4 +70,24 @@
   .brand {
     padding: 2rem 1.5rem;
   }
+}
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #5b8def;
+  text-decoration: none;
+}
+
+.back:hover {
+  text-decoration: underline;
+}
+
+.back:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+  border-radius: 0.25rem;
 }
