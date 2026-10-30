@@ -23,6 +23,8 @@ import { LoginHubPage } from "../../features/authentication/pages/LoginHubPage.t
 import { TicketsPage } from "../../features/tickets/pages/TicketsPage.tsx";
 import { CreateTicketPage } from "../../features/tickets/pages/CreateTicketPage.tsx";
 import { TicketDetailPage } from "../../features/tickets/pages/TicketDetailPage.tsx";
+import { ProtectedRequestPage } from "../../features/experiments/pages/ProtectedRequestPage.tsx";
+import { RevocationComparisonPage } from "../../features/experiments/pages/RevocationComparisonPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -46,6 +48,8 @@ const router = createBrowserRouter([
     ),
     children: [
       { path: "experimentos", element: <ProtectedRoute permissions={["ADMIN"]}><ExperimentsPage /></ProtectedRoute> },
+      { path: "solicitudes/configurar", element: <ProtectedRequestPage /> },
+      { path: "experimentos/revocacion", element: <RevocationComparisonPage /> },
       { path: "roles/crear", element: <CreateRolePage /> },
       { path: "roles/permisos", element: <RolePermissionsPage /> },
       { path: "roles/:name/permisos", element: <RolePermissionsPage /> },

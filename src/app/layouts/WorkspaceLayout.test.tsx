@@ -2,19 +2,22 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route, Routes } from 'react-router'
 import { describe, expect, it } from 'vitest'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 import { WorkspaceLayout } from './WorkspaceLayout.tsx'
 import { useSessionStore } from '../../features/authentication/hooks/useSessionStore.ts'
 
 function renderWorkspace() {
   render(
-    <MemoryRouter initialEntries={['/perfil']}>
-      <Routes>
-        <Route element={<WorkspaceLayout />}>
-          <Route path="/perfil" element={<p>Contenido</p>} />
-        </Route>
-      </Routes>
-    </MemoryRouter>,
+    <QueryClientProvider client={new QueryClient()}>
+      <MemoryRouter initialEntries={['/perfil']}>
+        <Routes>
+          <Route element={<WorkspaceLayout />}>
+            <Route path="/perfil" element={<p>Contenido</p>} />
+          </Route>
+        </Routes>
+      </MemoryRouter>
+    </QueryClientProvider>,
   )
 }
 
