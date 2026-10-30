@@ -11,7 +11,12 @@
   padding: 1.5rem 1rem;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  box-sizing: border-box;
+  overflow-y: auto;
 }
 
 .brand {

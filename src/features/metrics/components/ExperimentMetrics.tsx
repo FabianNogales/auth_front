@@ -1,29 +1,70 @@
 import tableStyles from '../../../shared/styles/dataTable.module.css'
 import { useExperimentMetrics } from '../hooks/useExperimentMetrics.ts'
+import { MetricTable } from './MetricTable.tsx'
+import { useId } from 'react'
 
-export function ExperimentMetrics({ experimentId }: { experimentId: number }) {
-  const query = useExperimentMetrics(experimentId)
+export function ExperimentMetrics({
+  experimentId,
+  live = false,
+}: {
+  experimentId: number
+  live?: boolean
+}) {
+  const query = useExperimentMetrics(experimentId, live)
+  const headingId = useId()
   return (
-    <section className={tableStyles.panel} aria-labelledby="experiment-metrics-title">
-      <h2 id="experiment-metrics-title">Métricas del experimento #{experimentId}</h2>
+    <section className={tableStyles.panel} aria-labelledby={headingId}>
+      <div className={tableStyles.toolbar}>
+        <h2 id={headingId}>Métricas del experimento #{experimentId}</h2>
+        <button
+          type="button"
+          disabled={query.isFetching}
+          onClick={() => void query.refetch()}
+        >
+          Actualizar métricas
+        </button>
+      </div>
+      {live && (
+        <p>
+          Actualización automática cada 2 segundos mientras se ejecuta el
+          experimento.
+        </p>
+      )}
       {query.isPending && <p role="status">Cargando métricas…</p>}
-      {query.isError && <p role="alert">{query.error.message} <button type="button" onClick={() => void query.refetch()}>Reintentar</button></p>}
-      {query.data && <>
-        {(!query.data.comparison.valid || query.data.comparison.losses > 0) && <p role="alert">Se registraron {query.data.comparison.losses} pérdidas de métricas. Los resultados están incompletos.</p>}
-        {!query.data.metrics.length ? <p className={tableStyles.empty}>No hay métricas registradas para este experimento.</p> : (
-          <div className={tableStyles.tableWrap}>
-            <table className={tableStyles.table}>
-              <caption>Solicitudes efectivamente registradas por el backend</caption>
-              <thead><tr>{['Mecanismo', 'Operación', 'HTTP', 'Latencia (ms)', 'Autenticación (ms)', 'Credencial (bytes)', 'Capa de fallo'].map((label) => <th scope="col" key={label}>{label}</th>)}</tr></thead>
-              <tbody>{query.data.metrics.map((metric, index) => (
-                <tr key={index}>
-                  <td>{metric.mechanism}</td><td>{metric.operation}</td><td>{metric.http_status}</td><td>{metric.latency_ms}</td><td>{metric.auth_ms}</td><td>{metric.credential_size}</td><td>{metric.failed_layer ?? '—'}</td>
-                </tr>
-              ))}</tbody>
-            </table>
-          </div>
-        )}
-      </>}
+      {query.isError && (
+        <p role="alert">
+          {query.error.message}{' '}
+          <button type="button" onClick={() => void query.refetch()}>
+            Reintentar
+          </button>
+        </p>
+      )}
+      {query.data && (
+        <>
+          {(!query.data.comparison.valid ||
+            query.data.comparison.losses > 0) && (
+            <p role="alert">
+              Se registraron {query.data.comparison.losses} pérdidas de
+              métricas. Los resultados están incompletos.
+            </p>
+          )}
+          <p aria-live="polite">
+            Solicitudes registradas: {query.data.metrics.length}
+          </p>
+          {!query.data.metrics.length ? (
+            <p className={tableStyles.empty}>
+              Este experimento no tiene datos registrados
+            </p>
+          ) : (
+            <>
+              <MetricTable metrics={query.data.metrics} />
+              <p className={tableStyles.muted}>
+                Fechas mostradas en tu zona horaria local.
+              </p>
+            </>
+          )}
+        </>
+      )}
     </section>
   )
 }

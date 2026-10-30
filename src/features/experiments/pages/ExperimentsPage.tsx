@@ -52,7 +52,7 @@ export function ExperimentsPage() {
           <Link to={`/experimentos/revocacion?ids=${metricsId}`}>Ver comportamiento ante revocación</Link>
           {' · '}<Link to={`/experimentos/comparacion?ids=${metricsId}`}>Ver comparación del experimento</Link>
         </nav>
-        <ExperimentMetrics key={metricsId} experimentId={metricsId} />
+        <ExperimentMetrics key={metricsId} experimentId={metricsId} live={execution.busy || experiments.data?.some(item => item.id === metricsId && item.status === 'RUNNING')} />
       </>}
     </main>
   )

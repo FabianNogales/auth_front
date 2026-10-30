@@ -1,4 +1,9 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render as renderUi, screen, waitFor } from "@testing-library/react";
+import type { ReactNode } from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { metricsService } from '../../metrics/services/metricsService.ts';
+vi.mock('../../metrics/services/metricsService.ts',()=>({metricsService:{get:vi.fn()}}));
+function render(ui:ReactNode) { return renderUi(<QueryClientProvider client={new QueryClient({defaultOptions:{queries:{retry:false}}})}>{ui}</QueryClientProvider>); }
 import { MemoryRouter } from "react-router";
 import { beforeEach, expect, it, vi } from "vitest";
 import { ProtectedRequestPage } from "./ProtectedRequestPage.tsx";
@@ -18,6 +23,7 @@ vi.mock("../services/revocationComparisonService.ts", () => ({
 }));
 beforeEach(() => {
   vi.resetAllMocks();
+  vi.mocked(metricsService.get).mockResolvedValue({metrics:[],comparison:{rows:[],losses:0,valid:true}});
   vi.mocked(experimentService.list).mockResolvedValue([
     {
       id: 12,

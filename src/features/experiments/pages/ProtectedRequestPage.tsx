@@ -12,7 +12,10 @@ import styles from "./ExperimentTools.module.css";
 import { experimentService } from "../services/experimentService.ts";
 import type { Experiment } from "../types/experiment.ts";
 import { useSessionStore } from "../../authentication/hooks/useSessionStore.ts";
+import { useQueryClient } from '@tanstack/react-query';
+import { ExperimentMetrics, metricsQueryKey } from '../../metrics/index.ts';
 export function ProtectedRequestPage() {
+  const queryClient = useQueryClient();
   const [params] = useSearchParams();
   const isAdmin = useSessionStore((state) =>
     state.permissions.includes("ADMIN"),
@@ -123,6 +126,7 @@ export function ProtectedRequestPage() {
                   experiment ? Number(experiment) : null,
                 ),
               );
+              if (experiment) await queryClient.invalidateQueries({queryKey:metricsQueryKey(Number(experiment))});
             } catch {
               setError(
                 "No se pudo enviar la solicitud. Comprueba la conexión.",
@@ -204,6 +208,7 @@ export function ProtectedRequestPage() {
           </section>
         )}
       </section>
+      {experiment && <ExperimentMetrics experimentId={Number(experiment)} live />}
     </main>
   );
 }

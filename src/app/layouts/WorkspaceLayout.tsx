@@ -82,7 +82,13 @@ export function WorkspaceLayout() {
     return true;
   });
 
-  const sections = ["GENERAL", "LABORATORIO"] as const;
+  const sections = [
+    "GENERAL",
+    "LABORATORIO",
+    "RESULTADOS",
+    "CREDENCIALES",
+    "PRIVILEGIOS",
+  ] as const;
   const navigationPath = location.pathname
     .replace(/^\/usuarios\/[^/]+\/api-keys$/, "/api-keys")
     .replace(/^\/roles\/[^/]+\/permisos$/, "/roles/permisos")
@@ -146,6 +152,12 @@ export function WorkspaceLayout() {
 
         {sections.map((section) => {
           const tabs = visibleTabs.filter((tab) => tab.section === section);
+          if (section === "RESULTADOS")
+            tabs.sort(
+              (a, b) =>
+                Number(b.path.endsWith("dashboard")) -
+                Number(a.path.endsWith("dashboard")),
+            );
           if (tabs.length === 0) {
             return null;
           }
@@ -160,6 +172,7 @@ export function WorkspaceLayout() {
                 <NavLink
                   key={tab.path}
                   to={tab.path}
+                  end
                   onClick={() => setMenuOpen(false)}
                   className={({ isActive }) =>
                     isActive || navigationPath === tab.path

@@ -11,7 +11,8 @@
  * dinámicos (el backend permite crear roles custom) así que el filtro se hace
  * por permisos, no por nombre de rol.
  */
-export type LabTabSection = "GENERAL" | "LABORATORIO";
+export type LabTabSection =
+  "GENERAL" | "LABORATORIO" | "RESULTADOS" | "CREDENCIALES" | "PRIVILEGIOS";
 
 export interface LabTab {
   path: string;
@@ -80,14 +81,14 @@ export const LAB_TABS: LabTab[] = [
   {
     path: "/experimentos/revocacion",
     label: "Comparar revocación",
-    section: "LABORATORIO",
+    section: "RESULTADOS",
     icon: "chart",
     permissions: ["ADMIN"],
   },
   {
     path: "/api-keys",
     label: "API Keys",
-    section: "LABORATORIO",
+    section: "CREDENCIALES",
     icon: "shield",
     permissions: ["ADMIN"],
   },
@@ -103,7 +104,7 @@ export const LAB_TABS: LabTab[] = [
   {
     path: "/sesion/jwt",
     label: "Sesión JWT",
-    section: "LABORATORIO",
+    section: "CREDENCIALES",
     icon: "shield",
     mechanisms: ["JWT"],
   },
@@ -111,7 +112,7 @@ export const LAB_TABS: LabTab[] = [
   {
     path: "/oauth/emitir",
     label: "Emitir token OAuth",
-    section: "LABORATORIO",
+    section: "CREDENCIALES",
     icon: "shield",
     permissions: ["ADMIN"],
   },
@@ -125,7 +126,7 @@ export const LAB_TABS: LabTab[] = [
   {
     path: "/oauth/renovar",
     label: "Renovar token OAuth",
-    section: "LABORATORIO",
+    section: "CREDENCIALES",
     icon: "shield",
     permissions: ["ADMIN"],
     mechanisms: ["OAUTH2"],
@@ -133,26 +134,30 @@ export const LAB_TABS: LabTab[] = [
   {
     path: "/oauth/revocar",
     label: "Revocar token OAuth",
-    section: "LABORATORIO",
+    section: "CREDENCIALES",
     icon: "shield",
     permissions: ["ADMIN"],
     mechanisms: ["OAUTH2"],
   },
-  { path: "/experimentos/comparacion",
-     label: "Comparar experimentos",
-     section: "LABORATORIO",
-     icon: "chart",
-     permissions: ["ADMIN"] 
-  },
-  { path: "/experimentos/dashboard",
-    label: "Dashboard",
-    section: "LABORATORIO",
+  {
+    path: "/experimentos/comparacion",
+    label: "Comparar experimentos",
+    section: "RESULTADOS",
     icon: "chart",
-    permissions: ["ADMIN"] 
+    permissions: ["ADMIN"],
   },
-  { path: "/experimentos/cambiar-rol",
+  {
+    path: "/experimentos/dashboard",
+    label: "Dashboard",
+    section: "RESULTADOS",
+    icon: "chart",
+    permissions: ["ADMIN"],
+  },
+  {
+    path: "/experimentos/cambiar-rol",
     label: "Cambiar rol",
-    section: "LABORATORIO",
+    section: "PRIVILEGIOS",
     icon: "users",
-    permissions: ["ADMIN"] },
+    permissions: ["ADMIN"],
+  },
 ];
