@@ -1,5 +1,7 @@
 import { httpClient } from "../../../shared/services/httpClient.ts";
 import { ApiError } from "../../../shared/services/ApiError.ts";
+import { sessionHeaders } from "../../authentication/services/sessionHeaders.ts";
+import { experimentService } from "./experimentService.ts";
 export interface ExperimentSummary {
   id: number;
   name: string;
@@ -27,7 +29,7 @@ export interface ExperimentEvidence {
 export const revocationComparisonService = {
   async experiments(): Promise<ExperimentSummary[]> {
     try {
-      return (await httpClient.get<ExperimentSummary[]>("/experiments")).data;
+      return await experimentService.list();
     } catch {
       throw new ApiError("No se pudieron cargar los experimentos");
     }
@@ -37,9 +39,11 @@ export const revocationComparisonService = {
       const [metrics, events] = await Promise.all([
         httpClient.get<ExperimentMetric[]>(
           `/experiments/${experiment.id}/metrics`,
+          { headers: sessionHeaders() },
         ),
         httpClient.get<ExperimentEvent[]>(
           `/experiments/${experiment.id}/events`,
+          { headers: sessionHeaders() },
         ),
       ]);
       return { experiment, metrics: metrics.data, events: events.data };

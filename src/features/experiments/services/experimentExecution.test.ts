@@ -6,6 +6,9 @@ import { metricsService } from '../../metrics/index.ts'
 import type { Experiment } from '../types/experiment.ts'
 import { experimentService } from './experimentService.ts'
 import { executeExperiment, invalidCredentialHeaders } from './experimentExecution.ts'
+import { experimentRevocationService } from './experimentRevocationService.ts'
+import { useSessionStore } from '../../authentication/hooks/useSessionStore.ts'
+vi.mock('./experimentRevocationService.ts', () => ({ experimentRevocationService: { revoke: vi.fn() } }))
 
 vi.mock('../../../shared/services/httpClient.ts', () => ({ httpClient: { get: vi.fn() } }))
 vi.mock('./experimentService.ts', () => ({ experimentService: { start: vi.fn(), finish: vi.fn() } }))
@@ -13,13 +16,43 @@ vi.mock('../../metrics/index.ts', () => ({ metricsService: { get: vi.fn() } }))
 
 const experiment: Experiment = { id: 7, name: 'Prueba', mechanism: 'oauth', status: 'PENDING', test_user_id: '42', resources: ['tickets.list'], created_at: '2026-10-30T12:00:00Z', started_at: null, finished_at: null }
 const options = () => ({ signal: new AbortController().signal, onStarted: vi.fn(), onProgress: vi.fn() })
-const results = { metrics: [{ mechanism: 'oauth', operation: 'GET api/tickets', http_status: 403, latency_ms: 10, auth_ms: 2, credential_size: 70, failed_layer: 'rbac' }], comparison: { rows: [], losses: 1, valid: false } }
+const results = { metrics: [{ id: 1, occurred_at: '2026-10-30T12:00:00Z', mechanism: 'oauth', operation: 'GET api/tickets', http_status: 403, latency_ms: 10, auth_ms: 2, credential_size: 70, failed_layer: 'rbac' }], comparison: { rows: [], losses: 1, valid: false } }
 
 beforeEach(() => {
   vi.resetAllMocks()
+  useSessionStore.getState().logout()
   vi.mocked(experimentService.start).mockResolvedValue({ ...experiment, status: 'RUNNING' })
   vi.mocked(experimentService.finish).mockResolvedValue({ ...experiment, status: 'COMPLETED' })
   vi.mocked(metricsService.get).mockResolvedValue(results)
+})
+
+it('revoca entre las dos solicitudes y repite la misma credencial sin alterarla', async () => {
+  vi.mocked(httpClient.get).mockResolvedValueOnce({data: {user: {id: '42'}}}).mockResolvedValueOnce({status: 200}).mockResolvedValueOnce({status: 401})
+  vi.mocked(experimentRevocationService.revoke).mockResolvedValue()
+  const credential = {email:'', secret:'access-a-revocar', scenario:'revocation' as const}
+  await executeExperiment(experiment, credential, options())
+  expect(experimentRevocationService.revoke).toHaveBeenCalledWith(experiment, 'access-a-revocar', expect.any(AbortSignal))
+  expect(vi.mocked(httpClient.get).mock.calls[1][1]?.headers).toEqual(vi.mocked(httpClient.get).mock.calls[2][1]?.headers)
+  expect(vi.mocked(httpClient.get).mock.invocationCallOrder[1]).toBeLessThan(vi.mocked(experimentRevocationService.revoke).mock.invocationCallOrder[0])
+  expect(vi.mocked(experimentRevocationService.revoke).mock.invocationCallOrder[0]).toBeLessThan(vi.mocked(httpClient.get).mock.invocationCallOrder[2])
+  expect(experimentService.finish).toHaveBeenCalledExactlyOnceWith(7)
+  expect(credential.secret).toBe('')
+})
+
+it('no revoca la credencial usada para administrar el laboratorio', async () => {
+  useSessionStore.getState().setOAuthToken('access-administrador')
+  vi.mocked(httpClient.get).mockResolvedValueOnce({data: {user: {id:'42'}}})
+  await expect(executeExperiment(experiment, {email:'', secret:'access-administrador', scenario:'revocation'}, options())).rejects.toThrow('No puedes revocar la credencial')
+  expect(experimentService.start).not.toHaveBeenCalled()
+  expect(experimentRevocationService.revoke).not.toHaveBeenCalled()
+})
+
+it('conserva las evidencias y finaliza FAILED si no se confirma la revocación', async () => {
+  vi.mocked(httpClient.get).mockResolvedValueOnce({data:{user:{id:'42'}}}).mockResolvedValueOnce({status:200})
+  vi.mocked(experimentRevocationService.revoke).mockRejectedValue(new ApiError('No se confirmó la revocación'))
+  await expect(executeExperiment(experiment, {email:'',secret:'test-only',scenario:'revocation'}, options())).rejects.toThrow('No se confirmó')
+  expect(httpClient.get).toHaveBeenCalledTimes(2)
+  expect(experimentService.finish).toHaveBeenCalledExactlyOnceWith(7,'FAILED')
 })
 
 it('verifica el sujeto, ejecuta dos requests secuenciales y acepta el 403 real y el 401 esperado', async () => {

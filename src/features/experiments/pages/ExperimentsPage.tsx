@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router'
 import { toast } from 'sonner'
 import tableStyles from '../../../shared/styles/dataTable.module.css'
 import { ExperimentMetrics } from '../../metrics/index.ts'
@@ -46,7 +47,13 @@ export function ExperimentsPage() {
         {execution.progress && <p className={styles.progress} role="status">{execution.progress}</p>}
         {execution.error && <p className={styles.error} role="alert">{execution.error}</p>}
       </section>}
-      {metricsId !== null && <ExperimentMetrics key={metricsId} experimentId={metricsId} />}
+      {metricsId !== null && <>
+        <nav aria-label="Resultados del experimento">
+          <Link to={`/experimentos/revocacion?ids=${metricsId}`}>Ver comportamiento ante revocación</Link>
+          {' · '}<Link to={`/experimentos/comparacion?ids=${metricsId}`}>Ver comparación del experimento</Link>
+        </nav>
+        <ExperimentMetrics key={metricsId} experimentId={metricsId} />
+      </>}
     </main>
   )
 }

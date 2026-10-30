@@ -5,8 +5,10 @@ import type { LabUser } from '../../authentication/types/auth.ts'
 import { metricsService } from '../../metrics/index.ts'
 import type { Experiment, ExperimentMechanism } from '../types/experiment.ts'
 import { experimentService } from './experimentService.ts'
+import { experimentRevocationService } from './experimentRevocationService.ts'
+import { sessionHeaders } from '../../authentication/services/sessionHeaders.ts'
 
-export interface ExperimentCredential { email: string; secret: string }
+export interface ExperimentCredential { email: string; secret: string; scenario?: 'authentication' | 'revocation' }
 
 export function credentialHeaders(mechanism: ExperimentMechanism, credential: ExperimentCredential): Record<string, string> {
   switch (mechanism) {
@@ -72,21 +74,32 @@ export async function executeExperiment(experiment: Experiment, credential: Expe
     ensureActive(options.signal)
     options.onProgress('Verificando la credencial del usuario de prueba…')
     await verifyUser(experiment, credential, options.signal)
-    // Preparar también el caso negativo antes de reservar el experimento.
-    const invalidHeaders = invalidCredentialHeaders(experiment.mechanism, credential)
+    const revocation = credential.scenario === 'revocation'
+    if (revocation && experiment.mechanism === 'basic') throw new ApiError('Basic no tiene revocación de token; utiliza la prueba de autenticación o cambio de privilegios')
+    const validHeaders = credentialHeaders(experiment.mechanism, credential)
+    const management = sessionHeaders()
+    if (revocation && Object.entries(validHeaders).some(([header, value]) => management[header] === value && (header === 'Authorization' || header === 'X-API-Key'))) {
+      throw new ApiError('No puedes revocar la credencial con la que administras el laboratorio. Usa una credencial de prueba distinta')
+    }
+    const invalidHeaders = revocation ? null : invalidCredentialHeaders(experiment.mechanism, credential)
     ensureActive(options.signal)
     const running = await experimentService.start(experiment.id)
     started = true
     options.onStarted(running)
     ensureActive(options.signal)
     options.onProgress('En ejecución · solicitud 1 de 2')
-    const validStatus = await requestTickets(experiment.id, credentialHeaders(experiment.mechanism, credential), options.signal)
+    const validStatus = await requestTickets(experiment.id, validHeaders, options.signal)
     if (!(validStatus >= 200 && validStatus < 300) && validStatus !== 403) {
       throw new ApiError(`La solicitud con credencial válida devolvió HTTP ${validStatus}; la ejecución no se completó`)
     }
     ensureActive(options.signal)
+    if (revocation) {
+      options.onProgress('Revocando la credencial de prueba y registrando el evento…')
+      await experimentRevocationService.revoke(experiment, credential.secret, options.signal)
+      ensureActive(options.signal)
+    }
     options.onProgress('En ejecución · solicitud 2 de 2')
-    const invalidStatus = await requestTickets(experiment.id, invalidHeaders, options.signal)
+    const invalidStatus = await requestTickets(experiment.id, invalidHeaders ?? validHeaders, options.signal)
     if (invalidStatus !== 401) throw new ApiError(`La prueba negativa devolvió HTTP ${invalidStatus}; se esperaba HTTP 401`)
     ensureActive(options.signal)
     options.onProgress('Consultando las métricas registradas…')

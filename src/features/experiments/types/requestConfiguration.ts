@@ -1,10 +1,19 @@
 import type { AuthenticationMethod } from "../../../shared/types/authentication.ts";
+import { AUTHENTICATION_API_VALUES } from "../../../shared/constants/authentication.ts";
 
 export const MECHANISM_OPTIONS = [
-  { value: "API_KEY", backend: "api_key", label: "API Key" },
-  { value: "BASIC", backend: "basic", label: "Basic" },
-  { value: "JWT", backend: "jwt", label: "JWT" },
-  { value: "OAUTH2", backend: "oauth", label: "OAuth 2.0" },
+  {
+    value: "API_KEY",
+    backend: AUTHENTICATION_API_VALUES.API_KEY,
+    label: "API Key",
+  },
+  { value: "BASIC", backend: AUTHENTICATION_API_VALUES.BASIC, label: "Basic" },
+  { value: "JWT", backend: AUTHENTICATION_API_VALUES.JWT, label: "JWT" },
+  {
+    value: "OAUTH2",
+    backend: AUTHENTICATION_API_VALUES.OAUTH2,
+    label: "OAuth 2.0",
+  },
 ] as const;
 export type BackendMechanism = (typeof MECHANISM_OPTIONS)[number]["backend"];
 export type RequestCredentials =

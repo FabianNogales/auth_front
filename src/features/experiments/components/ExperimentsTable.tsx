@@ -4,6 +4,7 @@ import type { LabUser } from '../../authentication/types/auth.ts'
 import { mechanismLabel } from '../constants/experiments.ts'
 import type { Experiment } from '../types/experiment.ts'
 import { ExperimentStatusBadge } from './ExperimentStatusBadge.tsx'
+import { Link } from 'react-router'
 
 export function ExperimentsTable({ experiments, users, busy, onStart, onMetrics }: {
   experiments: Experiment[]
@@ -28,6 +29,8 @@ export function ExperimentsTable({ experiments, users, busy, onStart, onMetrics 
             <td>
               <button className={tableStyles.linkButton} type="button" disabled={busy || experiment.status === 'RUNNING' || experiment.status === 'FAILED'} onClick={() => onStart(experiment)}>Iniciar experimento</button>
               {' · '}<button className={tableStyles.linkButton} type="button" onClick={() => onMetrics(experiment.id)}>Consultar métricas</button>
+              {experiment.status === 'RUNNING' && <>{' · '}<Link to={`/solicitudes/configurar?experimentId=${experiment.id}`}>Enviar solicitud de prueba</Link></>}
+              {' · '}<Link to={`/experimentos/revocacion?ids=${experiment.id}`}>Ver revocación</Link>
             </td>
           </tr>
         ))}</tbody>

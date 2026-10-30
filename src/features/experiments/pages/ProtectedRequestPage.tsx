@@ -1,13 +1,24 @@
-import { useRef, useState } from "react";
-import { Link } from "react-router";
+import { useEffect, useRef, useState } from "react";
+import { Link, useSearchParams } from "react-router";
 import { AuthenticationSelector } from "../components/AuthenticationSelector.tsx";
 import {
   emptyCredentials,
   type RequestCredentials,
+  MECHANISM_OPTIONS,
+  backendMechanism,
 } from "../types/requestConfiguration.ts";
 import { protectedRequestService } from "../services/protectedRequestService.ts";
 import styles from "./ExperimentTools.module.css";
+import { experimentService } from "../services/experimentService.ts";
+import type { Experiment } from "../types/experiment.ts";
+import { useSessionStore } from "../../authentication/hooks/useSessionStore.ts";
 export function ProtectedRequestPage() {
+  const [params] = useSearchParams();
+  const isAdmin = useSessionStore((state) =>
+    state.permissions.includes("ADMIN"),
+  );
+  const [experiments, setExperiments] = useState<Experiment[]>([]);
+  const [contextError, setContextError] = useState("");
   const [credentials, setCredentials] = useState<RequestCredentials>(() =>
     emptyCredentials("API_KEY"),
   );
@@ -19,6 +30,37 @@ export function ProtectedRequestPage() {
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
   const inFlight = useRef(false);
+  useEffect(() => {
+    if (!isAdmin) return;
+    let active = true;
+    experimentService
+      .list()
+      .then((data) => {
+        if (!active) return;
+        setExperiments(data);
+        const selected = data.find(
+          (item) =>
+            String(item.id) === params.get("experimentId") &&
+            item.status === "RUNNING",
+        );
+        if (selected) {
+          setExperiment(String(selected.id));
+          const option = MECHANISM_OPTIONS.find(
+            (item) => item.backend === selected.mechanism,
+          );
+          if (option) setCredentials(emptyCredentials(option.value));
+        }
+      })
+      .catch(() => {
+        if (active)
+          setContextError(
+            "No se pudo cargar la lista de experimentos. Puedes enviar una solicitud sin experimento.",
+          );
+      });
+    return () => {
+      active = false;
+    };
+  }, [isAdmin, params]);
   return (
     <main className={styles.page}>
       <header>
@@ -45,6 +87,20 @@ export function ProtectedRequestPage() {
                   : !credentials.token.trim();
             if (missing) {
               setError("Completa los datos del mecanismo seleccionado");
+              return;
+            }
+            if (
+              experiment &&
+              !experiments.some(
+                (item) =>
+                  String(item.id) === experiment &&
+                  item.status === "RUNNING" &&
+                  item.mechanism === backendMechanism(credentials.mechanism),
+              )
+            ) {
+              setError(
+                "Selecciona un experimento en ejecución del mismo mecanismo",
+              );
               return;
             }
             if (
@@ -81,23 +137,40 @@ export function ProtectedRequestPage() {
             value={credentials}
             disabled={pending}
             onChange={(value) => {
+              if (value.mechanism !== credentials.mechanism) setExperiment("");
               setCredentials(value);
               setResult(null);
               setError("");
             }}
           />
           <label>
-            ID del experimento (opcional)
-            <input
-              inputMode="numeric"
+            Experimento (opcional)
+            <select
               value={experiment}
               disabled={pending}
               onChange={(event) => {
                 setExperiment(event.target.value);
                 setResult(null);
               }}
-            />
+            >
+              <option value="">Sin experimento</option>
+              {experiments
+                .filter(
+                  (item) =>
+                    item.status === "RUNNING" &&
+                    item.mechanism === backendMechanism(credentials.mechanism),
+                )
+                .map((item) => (
+                  <option key={item.id} value={item.id}>
+                    #{item.id} · {item.name}
+                  </option>
+                ))}
+            </select>
           </label>
+          {contextError && <p role="status">{contextError}</p>}
+          {isAdmin && (
+            <Link to="/experimentos">Crear o ejecutar un experimento</Link>
+          )}
           <p className={styles.hint}>
             Con un experimento en ejecución se registran las métricas de esta
             solicitud. Recurso: listado de tickets.

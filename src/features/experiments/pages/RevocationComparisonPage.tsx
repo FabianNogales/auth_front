@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router";
+import { Link, useSearchParams } from "react-router";
 import {
   revocationComparisonService,
   type ExperimentSummary,
@@ -11,11 +11,19 @@ import table from "../../../shared/styles/dataTable.module.css";
 import { ExperimentRevocationForm } from "../components/ExperimentRevocationForm.tsx";
 import { useSessionStore } from "../../authentication/hooks/useSessionStore.ts";
 export function RevocationComparisonPage() {
+  const [params] = useSearchParams();
   const isAdmin = useSessionStore((state) =>
     state.permissions.includes("ADMIN"),
   );
   const [experiments, setExperiments] = useState<ExperimentSummary[]>([]);
-  const [selected, setSelected] = useState<number[]>([]);
+  const [selected, setSelected] = useState<number[]>(() => [
+    ...new Set(
+      (params.get("ids") ?? "")
+        .split(",")
+        .map(Number)
+        .filter((id) => Number.isSafeInteger(id) && id > 0),
+    ),
+  ]);
   const [evidence, setEvidence] = useState<ExperimentEvidence[]>([]);
   const [loading, setLoading] = useState(true);
   const [pending, setPending] = useState(false);
@@ -60,6 +68,12 @@ export function RevocationComparisonPage() {
         </p>
       </header>
       <Link to="/solicitudes/configurar">Configurar solicitud</Link>
+      <Link to="/experimentos">Crear y ejecutar experimentos</Link>
+      {selected.length > 0 && (
+        <Link to={`/experimentos/comparacion?ids=${selected.join(",")}`}>
+          Ver otras comparaciones de los seleccionados
+        </Link>
+      )}
       <section className={styles.panel}>
         <h2>Experimentos a comparar</h2>
         {loading ? (
@@ -97,7 +111,7 @@ export function RevocationComparisonPage() {
           tener esa evidencia.
         </p>
         <button
-          disabled={pending || !selected.length}
+          disabled={loading || pending || !selected.length}
           onClick={async () => {
             const version = ++request.current.version;
             setPending(true);
@@ -160,9 +174,10 @@ export function RevocationComparisonPage() {
           denegación de autorización. Basic no tiene revocación de token.
         </p>
         <p className={styles.hint}>
-          Las muestras rechazadas que el backend registra como «none» se
-          atribuyen al mecanismo configurado del experimento. No mezcles
-          mecanismos ni credenciales en una misma ejecución.
+          Las nuevas solicitudes rechazadas conservan su mecanismo de
+          autenticación. En registros históricos «none» se usa el mecanismo
+          configurado del experimento. No mezcles credenciales en una misma
+          ejecución.
         </p>
       </section>
       <section className={styles.panel}>

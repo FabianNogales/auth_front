@@ -11,6 +11,9 @@ vi.mock('../services/basicAuthService.ts', () => ({
     login: vi.fn(),
   },
 }))
+vi.mock('../../../shared/services/httpClient.ts', () => ({
+  httpClient: { get: vi.fn().mockResolvedValue({data:{roles:[{name:'VIEWER'}],permissions:['READ']}}) },
+}))
 
 const loginMock = vi.mocked(basicAuthService.login)
 

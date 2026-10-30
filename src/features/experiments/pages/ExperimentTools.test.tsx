@@ -6,6 +6,10 @@ import { RevocationComparisonPage } from "./RevocationComparisonPage.tsx";
 import { protectedRequestService } from "../services/protectedRequestService.ts";
 import { revocationComparisonService } from "../services/revocationComparisonService.ts";
 import { useSessionStore } from "../../authentication/hooks/useSessionStore.ts";
+import { experimentService } from "../services/experimentService.ts";
+vi.mock("../services/experimentService.ts", () => ({
+  experimentService: { list: vi.fn() },
+}));
 vi.mock("../services/protectedRequestService.ts", () => ({
   protectedRequestService: { send: vi.fn() },
 }));
@@ -14,6 +18,19 @@ vi.mock("../services/revocationComparisonService.ts", () => ({
 }));
 beforeEach(() => {
   vi.resetAllMocks();
+  vi.mocked(experimentService.list).mockResolvedValue([
+    {
+      id: 12,
+      name: "Prueba OAuth",
+      mechanism: "oauth",
+      status: "RUNNING",
+      test_user_id: "42",
+      resources: ["tickets.list"],
+      created_at: null,
+      started_at: null,
+      finished_at: null,
+    },
+  ]);
   useSessionStore.getState().setPermissions(["ADMIN"]);
 });
 it("adapta los campos y elimina credenciales al cambiar de mecanismo", () => {
@@ -44,6 +61,22 @@ it("adapta los campos y elimina credenciales al cambiar de mecanismo", () => {
     screen.getByLabelText("API Key", { selector: "input[type=password]" }),
   ).toHaveValue("");
 });
+it("recibe el experimento desde el listado y limpia su asociación al cambiar de mecanismo", async () => {
+  render(
+    <MemoryRouter initialEntries={["/solicitudes/configurar?experimentId=12"]}>
+      <ProtectedRequestPage />
+    </MemoryRouter>,
+  );
+  await waitFor(() =>
+    expect(screen.getByLabelText("Experimento (opcional)")).toHaveValue("12"),
+  );
+  expect(screen.getByRole("radio", { name: "OAuth 2.0" })).toBeChecked();
+  fireEvent.click(screen.getByRole("radio", { name: "JWT" }));
+  expect(screen.getByLabelText("Experimento (opcional)")).toHaveValue("");
+  expect(
+    screen.queryByRole("option", { name: "#12 · Prueba OAuth" }),
+  ).not.toBeInTheDocument();
+});
 it("envía únicamente la configuración elegida y distingue 401 de 403", async () => {
   vi.mocked(protectedRequestService.send)
     .mockResolvedValueOnce({ status: 401, data: { error: "unauthenticated" } })
@@ -59,7 +92,8 @@ it("envía únicamente la configuración elegida y distingue 401 de 403", async 
   fireEvent.change(screen.getByLabelText("Token OAuth"), {
     target: { value: "token-prueba" },
   });
-  fireEvent.change(screen.getByLabelText("ID del experimento (opcional)"), {
+  await screen.findByRole("option", { name: "#12 · Prueba OAuth" });
+  fireEvent.change(screen.getByLabelText("Experimento (opcional)"), {
     target: { value: "12" },
   });
   fireEvent.click(screen.getByRole("button", { name: "Enviar solicitud" }));

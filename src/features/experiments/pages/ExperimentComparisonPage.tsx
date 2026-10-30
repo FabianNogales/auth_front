@@ -1,5 +1,5 @@
 import { useQueries, useQuery } from '@tanstack/react-query'
-import { useSearchParams } from 'react-router'
+import { Link, useSearchParams } from 'react-router'
 import tableStyles from '../../../shared/styles/dataTable.module.css'
 import { useSessionStore } from '../../authentication/hooks/useSessionStore.ts'
 import { metricsQueryKey, metricsService } from '../../metrics/index.ts'
@@ -50,6 +50,7 @@ const privilegeTable = privilegeRows(
         <h1>Comparación de experimentos</h1>
         <p className={styles.subtitle}>Tamaño en bytes de la credencial que transporta cada mecanismo.</p>
       </header>
+      {selected.length > 0 && <Link to={`/experimentos/revocacion?ids=${selected.join(',')}`}>Comparar comportamiento ante revocación</Link>}
 
       <section className={tableStyles.panel} aria-label="Selección de experimentos">
         <h2>Experimentos</h2>
