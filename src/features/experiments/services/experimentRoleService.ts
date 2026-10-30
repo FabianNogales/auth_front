@@ -5,8 +5,7 @@ import { sessionHeaders } from '../../authentication/services/sessionHeaders.ts'
 export interface RoleChangeEvent {
   event_type: string
   created_at: string
-  payload: { user_id?: number; added?: string[]; removed?: string[]; admin_id?: number | null; admin_name?: string | null }
-  payload: after_metric_id?: number
+  payload: { user_id?: number; added?: string[]; removed?: string[]; admin_id?: number | null; admin_name?: string | null;after_metric_id?: number }
 }
 
 export const experimentRoleService = {
