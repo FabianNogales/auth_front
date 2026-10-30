@@ -6,6 +6,7 @@ import { WorkspaceLayout } from "../layouts/WorkspaceLayout.tsx";
 import { BasicLoginPage } from "../../features/authentication/pages/BasicLoginPage.tsx";
 import { JwtLoginPage } from "../../features/authentication/pages/JwtLoginPage.tsx";
 import { LabHomePage } from "../../features/experiments/pages/LabHomePage.tsx";
+import { ExperimentsPage } from "../../features/experiments/pages/ExperimentsPage.tsx";
 import { ProfilePage } from "../../features/users/pages/ProfilePage.tsx";
 import { NotFoundPage } from "./NotFoundPage.tsx";
 import { ApiKeysPage } from "../../features/authentication/pages/ApiKeysPage.tsx";
@@ -44,6 +45,7 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [
+      { path: "experimentos", element: <ProtectedRoute permissions={["ADMIN"]}><ExperimentsPage /></ProtectedRoute> },
       { path: "roles/crear", element: <CreateRolePage /> },
       { path: "roles/permisos", element: <RolePermissionsPage /> },
       { path: "roles/:name/permisos", element: <RolePermissionsPage /> },

@@ -80,6 +80,14 @@ export const LAB_TABS: LabTab[] = [
   },
 
   {
+    path: "/experimentos",
+    label: "Experimentos",
+    section: "LABORATORIO",
+    icon: "flask",
+    permissions: ["ADMIN"],
+  },
+
+  {
     path: "/sesion/jwt",
     label: "Sesión JWT",
     section: "LABORATORIO",

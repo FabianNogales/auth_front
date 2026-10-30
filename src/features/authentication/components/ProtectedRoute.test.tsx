@@ -13,14 +13,14 @@ const user: LabUser = {
   is_active: true,
 }
 
-function renderWithRoute(roles?: string[]) {
+function renderWithRoute(roles?: string[], permissions?: string[]) {
   render(
     <MemoryRouter initialEntries={['/privada']}>
       <Routes>
         <Route
           path="/privada"
           element={
-            <ProtectedRoute roles={roles}>
+            <ProtectedRoute roles={roles} permissions={permissions}>
               <p>Contenido privado</p>
             </ProtectedRoute>
           }
@@ -55,6 +55,22 @@ describe('ProtectedRoute', () => {
 
     expect(screen.getByText('Inicio')).toBeInTheDocument()
     expect(screen.queryByText('Contenido privado')).not.toBeInTheDocument()
+    useSessionStore.getState().logout()
+  })
+
+  it('protege experimentos por permiso efectivo incluso con un rol personalizado', () => {
+    useSessionStore.getState().loginBasic('ana@lab.test', 'x', user)
+    useSessionStore.getState().setRoles(['CUSTOM'])
+    useSessionStore.getState().setPermissions(['ADMIN'])
+    renderWithRoute(undefined, ['ADMIN'])
+    expect(screen.getByText('Contenido privado')).toBeInTheDocument()
+    useSessionStore.getState().logout()
+  })
+
+  it('rechaza acceso directo sin el permiso administrativo', () => {
+    useSessionStore.getState().loginBasic('ana@lab.test', 'x', user)
+    renderWithRoute(undefined, ['ADMIN'])
+    expect(screen.getByText('Inicio')).toBeInTheDocument()
     useSessionStore.getState().logout()
   })
 })
