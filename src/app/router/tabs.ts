@@ -72,6 +72,19 @@ export const LAB_TABS: LabTab[] = [
   },
 
   {
+    path: "/solicitudes/configurar",
+    label: "Configurar solicitud",
+    section: "LABORATORIO",
+    icon: "flask",
+  },
+  {
+    path: "/experimentos/revocacion",
+    label: "Comparar revocación",
+    section: "LABORATORIO",
+    icon: "chart",
+    permissions: ["ADMIN"],
+  },
+  {
     path: "/api-keys",
     label: "API Keys",
     section: "LABORATORIO",
