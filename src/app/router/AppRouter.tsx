@@ -25,6 +25,9 @@ import { CreateTicketPage } from "../../features/tickets/pages/CreateTicketPage.
 import { TicketDetailPage } from "../../features/tickets/pages/TicketDetailPage.tsx";
 import { ProtectedRequestPage } from "../../features/experiments/pages/ProtectedRequestPage.tsx";
 import { RevocationComparisonPage } from "../../features/experiments/pages/RevocationComparisonPage.tsx";
+import { ExperimentComparisonPage } from "../../features/experiments/pages/ExperimentComparisonPage.tsx";
+import { DashboardPage } from "../../features/experiments/pages/DashboardPage.tsx";
+import { ChangeRolePage } from "../../features/experiments/pages/ChangeRolePage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -67,6 +70,10 @@ const router = createBrowserRouter([
       { path: "tickets", element: <TicketsPage /> },
       { path: "tickets/nuevo", element: <CreateTicketPage /> },
       { path: "tickets/:ticketId", element: <TicketDetailPage /> },
+
+      { path: "experimentos/comparacion", element: <ProtectedRoute permissions={["ADMIN"]}><ExperimentComparisonPage /></ProtectedRoute> },
+      { path: "experimentos/dashboard", element: <ProtectedRoute permissions={["ADMIN"]}><DashboardPage /></ProtectedRoute> },
+      { path: "experimentos/cambiar-rol", element: <ProtectedRoute permissions={["ADMIN"]}><ChangeRolePage /></ProtectedRoute> },
       {
         index: true,
         element: (

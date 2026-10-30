@@ -1,0 +1,4 @@
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
+.card { background: var(--color-surface, #fff); border: 1px solid #dce3ed; border-radius: 16px; padding: 20px; }
+.card strong { display: block; font-size: 2rem; color: var(--color-text-strong); }
+.card span { color: var(--color-text-muted); }

@@ -138,4 +138,21 @@ export const LAB_TABS: LabTab[] = [
     permissions: ["ADMIN"],
     mechanisms: ["OAUTH2"],
   },
+  { path: "/experimentos/comparacion",
+     label: "Comparar experimentos",
+     section: "LABORATORIO",
+     icon: "chart",
+     permissions: ["ADMIN"] 
+  },
+  { path: "/experimentos/dashboard",
+    label: "Dashboard",
+    section: "LABORATORIO",
+    icon: "chart",
+    permissions: ["ADMIN"] 
+  },
+  { path: "/experimentos/cambiar-rol",
+    label: "Cambiar rol",
+    section: "LABORATORIO",
+    icon: "users",
+    permissions: ["ADMIN"] },
 ];

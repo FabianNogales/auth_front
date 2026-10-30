@@ -6,6 +6,8 @@ export interface Metric {
   auth_ms: number
   credential_size: number
   failed_layer: string | null
+  id: number
+  occurred_at: string
 }
 
 export interface MetricComparison {
