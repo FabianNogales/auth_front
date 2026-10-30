@@ -95,7 +95,7 @@ export function ChangeRolePage() {
         </p>
       </header>
 
-      <section className={tableStyles.panel} aria-label="Experimento">
+      <section className={`${tableStyles.panel} ${styles.experimentPanel}`} aria-label="Experimento">
         <div className={styles.field}>
           <label htmlFor="experiment">Experimento</label>
           <select
